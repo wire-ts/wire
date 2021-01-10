@@ -1,10 +1,11 @@
 import React from "react";
 import { keys, Store } from "./store";
+export { createStore as store } from "./store";
 
-export const createRootStore = <S extends Record<string, Store<any, any>>>(
+export const rootStore = <S extends Record<string, Store<any, any>>>(
   map: S
 ) => ({
-  getState: (): S => map,
+  getState: () => map,
   connect: function <MP, CP>(
     getProps: (props: S, in_props: CP) => MP,
     Component: React.ComponentType<CP & MP>
