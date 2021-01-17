@@ -1,6 +1,6 @@
 import React from "react";
-import { keys, Store } from "./store";
-export { createStore as store } from "./store";
+import { keys, Store } from "./common";
+export { store } from "./mutable";
 
 export const rootStore = <S extends Record<string, Store<any, any>>>(
   map: S
@@ -12,10 +12,10 @@ export const rootStore = <S extends Record<string, Store<any, any>>>(
   ) {
     return class extends React.PureComponent<CP> {
       static displayName = `Wired${Component.displayName}`;
-      private mounted = false;
-      private unsubs: Array<() => void> = [];
+      mounted = false;
+      unsubs: Array<() => void> = [];
 
-      private rerender = () => this.mounted && this.forceUpdate();
+      rerender = () => this.mounted && this.forceUpdate();
 
       componentDidMount() {
         this.mounted = true;

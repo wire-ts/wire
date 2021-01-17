@@ -11,6 +11,7 @@
   "license": "ISC",
   "peerDependencies": {
     "@types/react": "*",
-    "react": "*"
+    "react": "*",
+    "typescript": "^4.2.0-dev.20210114"
   }
 }
