@@ -1,36 +1,28 @@
 import React from "react";
-import { keys, Store } from "./common";
-export { store } from "./mutable";
 
-export const rootStore = <S extends Record<string, Store<any, any>>>(
-  map: S
+export { store } from "./pure";
+
+interface Store<S> {
+  state: S;
+  subscribe: (f: () => void) => () => void;
+}
+
+export const rootStore = <S extends Store<any>, T extends Record<string, S>>(
+  map: T
 ) => ({
   getState: () => map,
-  connect: function <MP, CP>(
-    getProps: (props: S, in_props: CP) => MP,
-    Component: React.ComponentType<CP & MP>
-  ) {
-    return class extends React.PureComponent<CP> {
-      static displayName = `Wired${Component.displayName}`;
-      mounted = false;
-      unsubs: Array<() => void> = [];
+  useStore<MP>(f: (props: T) => MP): MP {
+    const [computed, setComputed] = React.useState<MP>(f(map));
+    const updateProps = () => setComputed(f(map));
 
-      rerender = () => this.mounted && this.forceUpdate();
+    React.useEffect(() => {
+      const unsubs = Object.keys(map).map((k) => map[k].subscribe(updateProps));
 
-      componentDidMount() {
-        this.mounted = true;
-        this.unsubs = keys(map).map((k) => map[k].subscribe(this.rerender));
-      }
+      return () => {
+        unsubs.forEach((unsub) => unsub());
+      };
+    }, []);
 
-      componentWillUnmount() {
-        this.mounted = false;
-        this.unsubs.forEach((unsub) => unsub());
-        this.unsubs = [];
-      }
-
-      render() {
-        return <Component {...this.props} {...getProps(map, this.props)} />;
-      }
-    };
+    return computed;
   },
 });
