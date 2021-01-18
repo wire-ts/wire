@@ -14,7 +14,10 @@ type Store<S, M extends Methods<S>> = Readonly<{
   >;
 
 type Methods<S> = Readonly<
-  Record<string, S | ((state: Readonly<S>, ...args: any[]) => S | Promise<S>)>
+  Record<
+    string,
+    S | ((this: unknown, state: Readonly<S>, ...args: any[]) => S | Promise<S>)
+  >
 >;
 
 type Input<S, M> = Readonly<{
@@ -23,7 +26,7 @@ type Input<S, M> = Readonly<{
   M;
 
 export const store = <S, M extends Methods<S>>(
-  input: Input<Readonly<S>, M>
+  input: Input<S, M>
 ): Store<S, M> => {
   const subscribers = new Map<number, () => void>();
   let i = 0;
