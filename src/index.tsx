@@ -7,22 +7,25 @@ interface Store<S> {
   subscribe: (f: () => void) => () => void;
 }
 
+export interface RootStore<T extends Record<string, Store<any>>> {
+  data: T;
+  getState: () => T;
+}
+
+export function useStore<R extends RootStore<any>, MP>(
+  store: R,
+  f: (props: R["data"]) => MP
+): MP {
+  const map = store.data;
+  const [computed ] = React.useState<MP>(f(map));
+  //const updateProps = () => setComputed(f(map));
+
+  return computed;
+}
+
 export const rootStore = <S extends Store<any>, T extends Record<string, S>>(
   map: T
-) => ({
+): RootStore<T> => ({
+  data: map,
   getState: () => map,
-  useStore<MP>(f: (props: T) => MP): MP {
-    const [computed, setComputed] = React.useState<MP>(f(map));
-    const updateProps = () => setComputed(f(map));
-
-    React.useEffect(() => {
-      const unsubs = Object.keys(map).map((k) => map[k].subscribe(updateProps));
-
-      return () => {
-        unsubs.forEach((unsub) => unsub());
-      };
-    }, []);
-
-    return computed;
-  },
 });

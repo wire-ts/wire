@@ -1,4 +1,3 @@
-import React from "react";
 import { store as pure } from "../pure";
 import { rootStore } from "..";
 
@@ -16,12 +15,6 @@ export const counter = pure({
   },
 });
 
-const root = rootStore({
+export const root = rootStore({
   counter,
 });
-
-export const CounterComponent = (_props: { x: number }) => {
-  const { incrementBy, state } = root.useStore((s) => s.counter);
-
-  return <div onClick={() => incrementBy(1)}>{state.counter}</div>;
-};
