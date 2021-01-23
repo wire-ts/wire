@@ -44,5 +44,5 @@ export declare const root: {
             incrementBy: (x: number) => void;
             load: (id: number) => Promise<void>;
         }, "incrementBy" | "load">;
-    }) => Readonly<MP>): MP;
+    }) => MP): import("../helper-types").Immutable<MP>;
 };

@@ -1,6 +1,7 @@
 import React from "react";
 
 export { store } from "./pure";
+import { Immutable } from "./helper-types";
 
 interface Store<S> {
   state: S;
@@ -12,7 +13,7 @@ export const rootStore = <S extends Store<any>, T extends Record<string, S>>(
 ) => ({
   data: map,
   getState: () => map,
-  useStore<MP>(f: (props: T) => Readonly<MP>) {
+  useStore<MP>(f: (props: T) => MP) {
     const [computed, setComputed] = React.useState<MP>(f(map));
     const updateProps = () => {
       setComputed(f(map));
@@ -26,6 +27,6 @@ export const rootStore = <S extends Store<any>, T extends Record<string, S>>(
       };
     }, []);
 
-    return computed;
+    return computed as Immutable<MP>;
   },
 });

@@ -1,4 +1,5 @@
 export { store } from "./pure";
+import { Immutable } from "./helper-types";
 interface Store<S> {
     state: S;
     subscribe: (f: () => void) => () => void;
@@ -6,5 +7,5 @@ interface Store<S> {
 export declare const rootStore: <S extends Store<any>, T extends Record<string, S>>(map: T) => {
     data: T;
     getState: () => T;
-    useStore<MP>(f: (props: T) => Readonly<MP>): MP;
+    useStore<MP>(f: (props: T) => MP): Immutable<MP>;
 };

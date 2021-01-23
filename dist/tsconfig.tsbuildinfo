@@ -151,6 +151,11 @@
         "signature": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
         "affectsGlobalScope": true
       },
+      "../src/helper-types.ts": {
+        "version": "cb1277a2f423a57e1b107593c082ecaab9c34e820740dae6b18dc0b795ad589d",
+        "signature": "abf886e59b936d3ad185f6dc38afbef9218334b63ba26e4cfdd28ce9b62045d6",
+        "affectsGlobalScope": false
+      },
       "../node_modules/@types/react/global.d.ts": {
         "version": "ecf78e637f710f340ec08d5d92b3f31b134a46a4fcf2e758690d8c46ce62cba6",
         "signature": "ecf78e637f710f340ec08d5d92b3f31b134a46a4fcf2e758690d8c46ce62cba6",
@@ -177,8 +182,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.tsx": {
-        "version": "49af95055c6b0da0ecb54a3df816ee09d682410fe2b9543df32515229cc90986",
-        "signature": "e780fc482a419ef1d3f6ae069334073918809a41710b77aea4069f18538e5d3d",
+        "version": "2e357b2974734014e485a9249880636a96be9c834ebf40069c193c202df3b390",
+        "signature": "8481b2702c6b20bfd4b39a87e27affa8864964db9294e180a0e2ffbcb37be93f",
         "affectsGlobalScope": false
       },
       "../src/mutable.ts": {
@@ -188,7 +193,7 @@
       },
       "../src/examples/counter.tsx": {
         "version": "30a6eb18b52ef8986a773e85ebd5cf15fd78bbbac164d798dc5a9ca65060d908",
-        "signature": "450be0beeebdddbeb329c6c4781f2d29cf70ec5e00143eece1b70f581d801afa",
+        "signature": "c723d787c3d518cc6cf832c9ce867be6631abff0484efdfb69f03c25cdf8a9bc",
         "affectsGlobalScope": false
       }
     },
@@ -228,6 +233,7 @@
       ],
       "../src/index.tsx": [
         "../node_modules/@types/react/index.d.ts",
+        "../src/helper-types.ts",
         "../src/pure.ts"
       ]
     },
@@ -237,7 +243,11 @@
         "../node_modules/@types/react/global.d.ts",
         "../node_modules/csstype/index.d.ts"
       ],
+      "../src/examples/counter.tsx": [
+        "../src/helper-types.ts"
+      ],
       "../src/index.tsx": [
+        "../src/helper-types.ts",
         "../src/pure.ts"
       ]
     },
@@ -277,6 +287,7 @@
       "../node_modules/@types/react/index.d.ts",
       "../node_modules/csstype/index.d.ts",
       "../src/examples/counter.tsx",
+      "../src/helper-types.ts",
       "../src/index.tsx",
       "../src/mutable.ts",
       "../src/pure.ts"
