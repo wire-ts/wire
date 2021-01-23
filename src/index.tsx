@@ -12,7 +12,7 @@ export const rootStore = <S extends Store<any>, T extends Record<string, S>>(
 ) => ({
   data: map,
   getState: () => map,
-  useStore<MP>(f: (props: T) => MP) {
+  useStore<MP>(f: (props: T) => Readonly<MP>) {
     const [computed, setComputed] = React.useState<MP>(f(map));
     const updateProps = () => {
       setComputed(f(map));

@@ -44,5 +44,5 @@ export declare const root: {
             incrementBy: (x: number) => void;
             load: (id: number) => Promise<void>;
         }, "incrementBy" | "load">;
-    }) => MP): MP;
+    }) => Readonly<MP>): MP;
 };

@@ -177,8 +177,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.tsx": {
-        "version": "5c82e374e732c5c29726a8d12ab2a658882a3666824b2d10f407af4c148107a2",
-        "signature": "1d2b41d07becb9ad99005832b8b57e178d142391a1d3ac05e363f2121a1a8ae1",
+        "version": "49af95055c6b0da0ecb54a3df816ee09d682410fe2b9543df32515229cc90986",
+        "signature": "e780fc482a419ef1d3f6ae069334073918809a41710b77aea4069f18538e5d3d",
         "affectsGlobalScope": false
       },
       "../src/mutable.ts": {
@@ -188,7 +188,7 @@
       },
       "../src/examples/counter.tsx": {
         "version": "30a6eb18b52ef8986a773e85ebd5cf15fd78bbbac164d798dc5a9ca65060d908",
-        "signature": "9f2394fdc9504a68dd9efe8590df98217c4c977e7d7c8107c8552e174a055047",
+        "signature": "450be0beeebdddbeb329c6c4781f2d29cf70ec5e00143eece1b70f581d801afa",
         "affectsGlobalScope": false
       }
     },
@@ -214,7 +214,6 @@
       "declaration": true,
       "outDir": "./",
       "keyofStringsOnly": true,
-      "project": "..",
       "configFilePath": "../tsconfig.json"
     },
     "referencedMap": {
