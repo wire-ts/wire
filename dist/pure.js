@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.store = void 0;
-exports.store = (input) => {
+const store = (input) => {
     const subscribers = new Map();
     let i = 0;
     const broadcast = () => {
@@ -53,3 +53,4 @@ exports.store = (input) => {
     });
     return newStore;
 };
+exports.store = store;

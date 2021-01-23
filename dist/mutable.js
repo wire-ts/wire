@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.store = void 0;
-exports.store = (input) => {
+const store = (input) => {
     const subscribers = new Map();
     const broadcast = () => {
         for (const callback of subscribers.values()) {
@@ -27,3 +27,4 @@ exports.store = (input) => {
     });
     return newStore;
 };
+exports.store = store;

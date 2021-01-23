@@ -7,7 +7,7 @@ exports.rootStore = exports.store = void 0;
 const react_1 = __importDefault(require("react"));
 var pure_1 = require("./pure");
 Object.defineProperty(exports, "store", { enumerable: true, get: function () { return pure_1.store; } });
-exports.rootStore = (map) => ({
+const rootStore = (map) => ({
     data: map,
     getState: () => map,
     useStore(f) {
@@ -24,3 +24,4 @@ exports.rootStore = (map) => ({
         return computed;
     },
 });
+exports.rootStore = rootStore;
