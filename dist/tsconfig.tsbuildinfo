@@ -177,8 +177,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.tsx": {
-        "version": "9d5ca86961ed1bf5e02b221469b48a77ae1bf1cf61d6cbdf31f75d555c2849cf",
-        "signature": "f29ba49df98bdb788dbc8efcad856d2d5b83ed6d168c810bf5b311fcb7cc608c",
+        "version": "7cef9d15fcce05584308100cb5325b92aa9b37cf6be4f07f036af86bacac421c",
+        "signature": "5f2a0bcaf6bdfa7b66c2222fd77a69544a6bdec13db865d2ba3d675cd185fad2",
         "affectsGlobalScope": false
       },
       "../src/mutable.ts": {
@@ -188,7 +188,7 @@
       },
       "../src/examples/counter.tsx": {
         "version": "30a6eb18b52ef8986a773e85ebd5cf15fd78bbbac164d798dc5a9ca65060d908",
-        "signature": "80fb05a1c4b07299e67cb18a2652b9acfc8efcae2467b4bcdda98b0f558a73cd",
+        "signature": "9f2394fdc9504a68dd9efe8590df98217c4c977e7d7c8107c8552e174a055047",
         "affectsGlobalScope": false
       }
     },
@@ -237,9 +237,6 @@
         "../node_modules/@types/prop-types/index.d.ts",
         "../node_modules/@types/react/global.d.ts",
         "../node_modules/csstype/index.d.ts"
-      ],
-      "../src/examples/counter.tsx": [
-        "../src/index.tsx"
       ],
       "../src/index.tsx": [
         "../src/pure.ts"
