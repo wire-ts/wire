@@ -177,8 +177,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.tsx": {
-        "version": "7cef9d15fcce05584308100cb5325b92aa9b37cf6be4f07f036af86bacac421c",
-        "signature": "5f2a0bcaf6bdfa7b66c2222fd77a69544a6bdec13db865d2ba3d675cd185fad2",
+        "version": "5c82e374e732c5c29726a8d12ab2a658882a3666824b2d10f407af4c148107a2",
+        "signature": "1d2b41d07becb9ad99005832b8b57e178d142391a1d3ac05e363f2121a1a8ae1",
         "affectsGlobalScope": false
       },
       "../src/mutable.ts": {
@@ -214,6 +214,7 @@
       "declaration": true,
       "outDir": "./",
       "keyofStringsOnly": true,
+      "watch": true,
       "configFilePath": "../tsconfig.json"
     },
     "referencedMap": {
