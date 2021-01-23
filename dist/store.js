@@ -9,13 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.store = void 0;
 const store = (input) => {
     const subscribers = new Map();
     let i = 0;
-    const broadcast = () => {
+    const broadcast = (method) => {
         for (const callback of subscribers.values()) {
-            callback();
+            callback(method);
         }
     };
     const newStore = {
@@ -38,7 +37,7 @@ const store = (input) => {
                 newStore[key] = (...args) => {
                     // @ts-ignore
                     newStore.state = input[key](newStore.state, ...args);
-                    broadcast();
+                    broadcast(key);
                 };
                 break;
             case "AsyncFunction":
@@ -46,11 +45,11 @@ const store = (input) => {
                 newStore[key] = (...args) => __awaiter(void 0, void 0, void 0, function* () {
                     // @ts-ignore
                     newStore.state = yield input[key](newStore.state, ...args);
-                    broadcast();
+                    broadcast(key);
                 });
                 break;
         }
     });
     return newStore;
 };
-exports.store = store;
+exports.default = store;

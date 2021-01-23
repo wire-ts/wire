@@ -10,9 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.root = exports.counter = void 0;
-const pure_1 = require("../pure");
 const __1 = require("..");
-exports.counter = pure_1.store({
+exports.counter = __1.store({
     state: { counter: 0 },
     incrementBy: (state, x) => ({
         counter: state.counter + x,

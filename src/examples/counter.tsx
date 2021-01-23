@@ -1,7 +1,6 @@
-import { store as pure } from "../pure";
-import { rootStore } from "..";
+import { rootStore, store } from "..";
 
-export const counter = pure({
+export const counter = store({
   state: { counter: 0 },
   incrementBy: (state, x: number) => ({
     counter: state.counter + x,

@@ -1,6 +1,8 @@
+import { SubscribeFn } from "./common";
+
 type Store<S, M extends Methods<S>> = Readonly<{
   state: Readonly<S>;
-  subscribe: (f: () => void) => () => void;
+  subscribe: (f: SubscribeFn) => () => void;
 }> &
   Omit<
     {
@@ -25,21 +27,21 @@ type Input<S, M> = Readonly<{
 }> &
   M;
 
-export const store = <S, M extends Methods<S>>(
+const store = <S, M extends Methods<S>>(
   input: Input<S, M>
 ): Store<S, M> => {
-  const subscribers = new Map<number, () => void>();
+  const subscribers = new Map<number, SubscribeFn>();
   let i = 0;
 
-  const broadcast = () => {
+  const broadcast = (method: string) => {
     for (const callback of subscribers.values()) {
-      callback();
+      callback(method);
     }
   };
 
   const newStore = {
     state: input.state,
-    subscribe: (f: () => void) => {
+    subscribe: (f: SubscribeFn) => {
       const index = i;
       subscribers.set(index, f);
       i++;
@@ -61,7 +63,7 @@ export const store = <S, M extends Methods<S>>(
         newStore[key] = (...args: any[]) => {
           // @ts-ignore
           newStore.state = input[key](newStore.state, ...args);
-          broadcast();
+          broadcast(key);
         };
         break;
 
@@ -70,7 +72,7 @@ export const store = <S, M extends Methods<S>>(
         newStore[key] = async (...args: any[]) => {
           // @ts-ignore
           newStore.state = await input[key](newStore.state, ...args);
-          broadcast();
+          broadcast(key);
         };
         break;
     }
@@ -78,3 +80,5 @@ export const store = <S, M extends Methods<S>>(
 
   return (newStore as any) as Store<S, M>;
 };
+
+export default store;

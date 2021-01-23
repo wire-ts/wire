@@ -2,47 +2,35 @@ export declare const counter: Readonly<{
     state: Readonly<{
         counter: number;
     }>;
-    subscribe: (f: () => void) => () => void;
+    subscribe: (f: import("../common").SubscribeFn) => () => void;
 }> & Pick<{
     state: never;
     incrementBy: (x: number) => void;
     load: (id: number) => Promise<void>;
 }, "incrementBy" | "load">;
 export declare const root: {
-    data: {
+    getState: () => import("../common").ImmutableObject<{
         counter: Readonly<{
             state: Readonly<{
                 counter: number;
             }>;
-            subscribe: (f: () => void) => () => void;
+            subscribe: (f: import("../common").SubscribeFn) => () => void;
         }> & Pick<{
             state: never;
             incrementBy: (x: number) => void;
             load: (id: number) => Promise<void>;
         }, "incrementBy" | "load">;
-    };
-    getState: () => {
-        counter: Readonly<{
-            state: Readonly<{
-                counter: number;
-            }>;
-            subscribe: (f: () => void) => () => void;
-        }> & Pick<{
-            state: never;
-            incrementBy: (x: number) => void;
-            load: (id: number) => Promise<void>;
-        }, "incrementBy" | "load">;
-    };
+    }>;
     useStore<MP>(f: (props: {
         counter: Readonly<{
             state: Readonly<{
                 counter: number;
             }>;
-            subscribe: (f: () => void) => () => void;
+            subscribe: (f: import("../common").SubscribeFn) => () => void;
         }> & Pick<{
             state: never;
             incrementBy: (x: number) => void;
             load: (id: number) => Promise<void>;
         }, "incrementBy" | "load">;
-    }) => MP): import("../helper-types").Immutable<MP>;
+    }) => MP): import("../common").Immutable<MP>;
 };

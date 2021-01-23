@@ -151,9 +151,9 @@
         "signature": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
         "affectsGlobalScope": true
       },
-      "../src/helper-types.ts": {
-        "version": "cb1277a2f423a57e1b107593c082ecaab9c34e820740dae6b18dc0b795ad589d",
-        "signature": "abf886e59b936d3ad185f6dc38afbef9218334b63ba26e4cfdd28ce9b62045d6",
+      "../src/common.ts": {
+        "version": "784893f75a4a4235d2d6152b8becc2714f578f08a5f5209fbc2ab05a57f0fa34",
+        "signature": "7f39ede757671ade94560de4cc6f3b15e61cdce1c7a32f734a99ad30d0e71324",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/react/global.d.ts": {
@@ -176,24 +176,24 @@
         "signature": "5eec5df7493ec6ad30cd641228d5ec7a5cc46d86e04a7f5d4f3cc239c6fa05bc",
         "affectsGlobalScope": true
       },
-      "../src/pure.ts": {
-        "version": "7bc55c9ee27e7807d817cdbc518a5470149e5f26c4e8ec18c97bf8ebcdc165df",
-        "signature": "0200b040a64beae8256a135d4f9c7183ec258cf3c7592d7de6e0ac3b2981a1d4",
+      "../src/root.ts": {
+        "version": "22447a28cefd9e6da23e47007d106cce684fb402a83ec9266c8df7b46fed8f4a",
+        "signature": "8e2fc55ec57341f21a4f46ae0fabf7cf7320577e94496344745e2a611fb34fb6",
         "affectsGlobalScope": false
       },
-      "../src/index.tsx": {
-        "version": "2e357b2974734014e485a9249880636a96be9c834ebf40069c193c202df3b390",
-        "signature": "8481b2702c6b20bfd4b39a87e27affa8864964db9294e180a0e2ffbcb37be93f",
+      "../src/store.ts": {
+        "version": "5ea8d8359c4313361bd9e9ea1640c0a3a04a100dafc38b1a0f7da1a1cdfefac7",
+        "signature": "962db8c5ab558e60abc0e28f053581a659078805dbcd36c0741781a73d97fd5a",
         "affectsGlobalScope": false
       },
-      "../src/mutable.ts": {
-        "version": "bba095d6952f3f72410f0c2ae122d08665800026aa3f6cc70d21539879ea75fb",
-        "signature": "89f5faf1d512c5fa6e67f292b2db9e7af0125853abd0f8e41dbfad2c9177b9a3",
+      "../src/index.ts": {
+        "version": "096fbc737c77e07ae4c191d9152fdcf340e3bfa40c93b80053133cbcd6746e4e",
+        "signature": "096fbc737c77e07ae4c191d9152fdcf340e3bfa40c93b80053133cbcd6746e4e",
         "affectsGlobalScope": false
       },
       "../src/examples/counter.tsx": {
-        "version": "30a6eb18b52ef8986a773e85ebd5cf15fd78bbbac164d798dc5a9ca65060d908",
-        "signature": "c723d787c3d518cc6cf832c9ce867be6631abff0484efdfb69f03c25cdf8a9bc",
+        "version": "8fd153e37740c78be15c87b977b163ba35ee74bcfe1b5b82e7a5a8c4e39ab4cc",
+        "signature": "d0e148fdce916131fe889cc24cb6a5881b7d489b37fe8d203aea50bc99e2a1cb",
         "affectsGlobalScope": false
       }
     },
@@ -228,13 +228,18 @@
         "../node_modules/csstype/index.d.ts"
       ],
       "../src/examples/counter.tsx": [
-        "../src/index.tsx",
-        "../src/pure.ts"
+        "../src/index.ts"
       ],
-      "../src/index.tsx": [
+      "../src/index.ts": [
+        "../src/root.ts",
+        "../src/store.ts"
+      ],
+      "../src/root.ts": [
         "../node_modules/@types/react/index.d.ts",
-        "../src/helper-types.ts",
-        "../src/pure.ts"
+        "../src/common.ts"
+      ],
+      "../src/store.ts": [
+        "../src/common.ts"
       ]
     },
     "exportedModulesMap": {
@@ -244,11 +249,17 @@
         "../node_modules/csstype/index.d.ts"
       ],
       "../src/examples/counter.tsx": [
-        "../src/helper-types.ts"
+        "../src/common.ts"
       ],
-      "../src/index.tsx": [
-        "../src/helper-types.ts",
-        "../src/pure.ts"
+      "../src/index.ts": [
+        "../src/root.ts",
+        "../src/store.ts"
+      ],
+      "../src/root.ts": [
+        "../src/common.ts"
+      ],
+      "../src/store.ts": [
+        "../src/common.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -286,11 +297,11 @@
       "../node_modules/@types/react/global.d.ts",
       "../node_modules/@types/react/index.d.ts",
       "../node_modules/csstype/index.d.ts",
+      "../src/common.ts",
       "../src/examples/counter.tsx",
-      "../src/helper-types.ts",
-      "../src/index.tsx",
-      "../src/mutable.ts",
-      "../src/pure.ts"
+      "../src/index.ts",
+      "../src/root.ts",
+      "../src/store.ts"
     ]
   },
   "version": "4.1.3"

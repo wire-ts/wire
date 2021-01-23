@@ -1,3 +1,10 @@
+export type SubscribeFn = ((method: string) => void) | (() => void);
+
+export interface Store<S> {
+  state: S;
+  subscribe: (f: SubscribeFn) => () => void;
+}
+
 type ImmutablePrimitive = undefined | null | boolean | string | number | Function;
 export type ImmutableMap<K, V> = ReadonlyMap<Immutable<K>, Immutable<V>>;
 export type ImmutableSet<T> = ReadonlySet<Immutable<T>>;
