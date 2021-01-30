@@ -1,36 +1,109 @@
-export declare const counter: Readonly<{
-    state: Readonly<{
-        counter: number;
+export declare const counter: import("../store").Output.StoreWithThunks<{
+    i: number;
+}, {
+    incrementBy: (state: {
+        i: number;
+    }, x: number) => {
+        i: number;
+    };
+    load: (state: {
+        i: number;
+    }, id: string) => Promise<{
+        i: number;
     }>;
-    subscribe: (f: import("../common").SubscribeFn) => () => void;
-}> & Pick<{
-    state: never;
-    incrementBy: (x: number) => void;
-    load: (id: number) => Promise<void>;
-}, "incrementBy" | "load">;
-export declare const root: {
-    getState: () => import("../common").ImmutableObject<{
-        counter: Readonly<{
-            state: Readonly<{
-                counter: number;
+}, {
+    postLogin(store: {
+        state: {
+            i: number;
+        };
+        actions: import("../store").Output.Actions<{
+            i: number;
+        }, {
+            incrementBy: (state: {
+                i: number;
+            }, x: number) => {
+                i: number;
+            };
+            load: (state: {
+                i: number;
+            }, id: string) => Promise<{
+                i: number;
             }>;
-            subscribe: (f: import("../common").SubscribeFn) => () => void;
-        }> & Pick<{
-            state: never;
-            incrementBy: (x: number) => void;
-            load: (id: number) => Promise<void>;
-        }, "incrementBy" | "load">;
+        }>;
+    }): Promise<void>;
+}>;
+export declare const root: {
+    enableDebugging: () => void;
+    getState: () => import("../common").ImmutableObject<{
+        counter: import("../store").Output.StoreWithThunks<{
+            i: number;
+        }, {
+            incrementBy: (state: {
+                i: number;
+            }, x: number) => {
+                i: number;
+            };
+            load: (state: {
+                i: number;
+            }, id: string) => Promise<{
+                i: number;
+            }>;
+        }, {
+            postLogin(store: {
+                state: {
+                    i: number;
+                };
+                actions: import("../store").Output.Actions<{
+                    i: number;
+                }, {
+                    incrementBy: (state: {
+                        i: number;
+                    }, x: number) => {
+                        i: number;
+                    };
+                    load: (state: {
+                        i: number;
+                    }, id: string) => Promise<{
+                        i: number;
+                    }>;
+                }>;
+            }): Promise<void>;
+        }>;
     }>;
     useStore<MP>(f: (props: {
-        counter: Readonly<{
-            state: Readonly<{
-                counter: number;
+        counter: import("../store").Output.StoreWithThunks<{
+            i: number;
+        }, {
+            incrementBy: (state: {
+                i: number;
+            }, x: number) => {
+                i: number;
+            };
+            load: (state: {
+                i: number;
+            }, id: string) => Promise<{
+                i: number;
             }>;
-            subscribe: (f: import("../common").SubscribeFn) => () => void;
-        }> & Pick<{
-            state: never;
-            incrementBy: (x: number) => void;
-            load: (id: number) => Promise<void>;
-        }, "incrementBy" | "load">;
+        }, {
+            postLogin(store: {
+                state: {
+                    i: number;
+                };
+                actions: import("../store").Output.Actions<{
+                    i: number;
+                }, {
+                    incrementBy: (state: {
+                        i: number;
+                    }, x: number) => {
+                        i: number;
+                    };
+                    load: (state: {
+                        i: number;
+                    }, id: string) => Promise<{
+                        i: number;
+                    }>;
+                }>;
+            }): Promise<void>;
+        }>;
     }) => MP): import("../common").Immutable<MP>;
 };

@@ -4,14 +4,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
+const common_1 = require("./common");
+const getStateTree = (root) => common_1.keys(root).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: common_1.deepCopy(root[key].state) })), {});
 const rootStore = (map) => {
-    // @ts-ignore
-    if (window._WIRE_EXTENSION !== undefined) {
-        // @ts-ignore
-        const log = window._WIRE_EXTENSION;
-        Object.keys(map).map((k) => map[k].subscribe((method) => log(`${k}.${method}`)));
-    }
     return {
+        enableDebugging: () => {
+            const stateMap = getStateTree(map);
+            let extensionReady = false;
+            let outstandingMsgs = [];
+            const postMessage = (msg) => {
+                if (extensionReady) {
+                    window.postMessage(msg, "*");
+                }
+                else {
+                    outstandingMsgs.push(msg);
+                }
+            };
+            postMessage({
+                type: "WIRE_INIT",
+                stateMap,
+            });
+            common_1.keys(map).map((k) => map[k].subscribe((method) => {
+                postMessage({
+                    type: "WIRE_CHANGE",
+                    store: k,
+                    method,
+                    oldState: common_1.deepCopy(stateMap[k]),
+                    newState: common_1.deepCopy(map[k].state),
+                });
+                stateMap[k] = common_1.deepCopy(map[k].state);
+            }));
+            window.addEventListener("message", (e) => {
+                if (typeof e.data === "object" && e.data.type === "WIRE_EXT_READY") {
+                    console.log("READY", outstandingMsgs);
+                    extensionReady = true;
+                    outstandingMsgs.forEach((m) => postMessage(m));
+                    outstandingMsgs = [];
+                }
+            });
+        },
         getState: () => map,
         useStore(f) {
             const [computed, setComputed] = react_1.default.useState(f(map));

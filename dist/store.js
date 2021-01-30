@@ -9,45 +9,56 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const store = (input) => {
-    const subscribers = new Map();
-    let i = 0;
-    const broadcast = (method) => {
-        for (const callback of subscribers.values()) {
-            callback(method);
-        }
-    };
+const common_1 = require("./common");
+const store = (initialState) => ({
+    actions: (actions) => createStoreWithActions(initialState, actions),
+});
+class Subscribers {
+    constructor() {
+        this.i = 0;
+        this.subscribers = new Map();
+        this.add = (f) => {
+            const index = this.i;
+            this.subscribers.set(index, f);
+            this.i++;
+            return () => this.subscribers.delete(index);
+        };
+        this.broadcast = (method) => {
+            for (const callback of this.subscribers.values()) {
+                callback(method);
+            }
+        };
+    }
+}
+const createStoreWithActions = (initialState, actions) => {
+    const subscribers = new Subscribers();
     const newStore = {
-        state: input.state,
-        subscribe: (f) => {
-            const index = i;
-            subscribers.set(index, f);
-            i++;
-            return () => subscribers.delete(index);
+        state: initialState,
+        subscribe: subscribers.add,
+        actions: {},
+        thunks: (thunks) => {
+            const storeWithThunks = newStore;
+            storeWithThunks.thunks = common_1.keys(thunks).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: (...args) => {
+                    thunks[key](storeWithThunks, ...args);
+                    subscribers.broadcast(key);
+                } })), {});
+            return storeWithThunks;
         },
     };
-    Object.keys(input).forEach((key) => {
-        if (key === "state") {
-            return;
+    common_1.keys(actions).forEach((key) => {
+        if (actions[key].constructor.name === "Function") {
+            // @ts-ignore
+            newStore.actions[key] = (...args) => {
+                newStore.state = actions[key](newStore.state, ...args);
+                subscribers.broadcast(key);
+            };
         }
-        const constructor = input[key].constructor.name;
-        switch (constructor) {
-            case "Function":
-                // @ts-ignore
-                newStore[key] = (...args) => {
-                    // @ts-ignore
-                    newStore.state = input[key](newStore.state, ...args);
-                    broadcast(key);
-                };
-                break;
-            case "AsyncFunction":
-                // @ts-ignore
-                newStore[key] = (...args) => __awaiter(void 0, void 0, void 0, function* () {
-                    // @ts-ignore
-                    newStore.state = yield input[key](newStore.state, ...args);
-                    broadcast(key);
-                });
-                break;
+        else {
+            // @ts-ignore
+            newStore.actions[key] = (...args) => __awaiter(void 0, void 0, void 0, function* () {
+                newStore.state = yield actions[key](newStore.state, ...args);
+                subscribers.broadcast(key);
+            });
         }
     });
     return newStore;

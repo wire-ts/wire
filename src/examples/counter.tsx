@@ -1,18 +1,18 @@
 import { rootStore, store } from "..";
 
-export const counter = store({
-  state: { counter: 0 },
-  incrementBy: (state, x: number) => ({
-    counter: state.counter + x,
-  }),
-  async load(state, id: number) {
-    const fakeAPIResponse = await Promise.resolve(id);
-    return {
+export const counter = store({ i: 0 })
+  .actions({
+    incrementBy: (state, x: number) => ({ ...state, i: state.i + x }),
+    load: async (state, id: string) => ({
       ...state,
-      counter: fakeAPIResponse,
-    };
-  },
-});
+      i: await Promise.resolve(parseFloat(id)),
+    }),
+  })
+  .thunks({
+    async postLogin(store) {
+      await store.actions.load("123");
+    },
+  });
 
 export const root = rootStore({
   counter,

@@ -11,15 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.root = exports.counter = void 0;
 const __1 = require("..");
-exports.counter = __1.store({
-    state: { counter: 0 },
-    incrementBy: (state, x) => ({
-        counter: state.counter + x,
+exports.counter = __1.store({ i: 0 })
+    .actions({
+    incrementBy: (state, x) => (Object.assign(Object.assign({}, state), { i: state.i + x })),
+    load: (state, id) => __awaiter(void 0, void 0, void 0, function* () {
+        return (Object.assign(Object.assign({}, state), { i: yield Promise.resolve(parseFloat(id)) }));
     }),
-    load(state, id) {
+})
+    .thunks({
+    postLogin(store) {
         return __awaiter(this, void 0, void 0, function* () {
-            const fakeAPIResponse = yield Promise.resolve(id);
-            return Object.assign(Object.assign({}, state), { counter: fakeAPIResponse });
+            yield store.actions.load("123");
         });
     },
 });

@@ -1,84 +1,136 @@
-import { SubscribeFn } from "./common";
+import { keys, SubscribeFn } from "./common";
 
-type Store<S, M extends Methods<S>> = Readonly<{
-  state: Readonly<S>;
-  subscribe: (f: SubscribeFn) => () => void;
-}> &
-  Omit<
-    {
-      [k in keyof M]: M[k] extends (s: any, ...args: infer A) => S
-        ? (...args: A) => void
-        : M[k] extends (s: any, ...args: infer A) => Promise<S>
-        ? (...args: A) => Promise<void>
-        : never;
-    },
-    "state"
+export namespace Input {
+  export type Actions<S> = Record<
+    string,
+    (state: S, ...args: any[]) => S | Promise<S>
   >;
 
-type Methods<S> = Readonly<
-  Record<
+  export type Thunks<S, A extends Actions<S>> = Record<
     string,
-    S | ((this: unknown, state: Readonly<S>, ...args: any[]) => S | Promise<S>)
-  >
->;
+    (
+      store: { state: S; actions: Output.Actions<S, A> },
+      ...args: any[]
+    ) => void | Promise<void>
+  >;
 
-type Input<S, M> = Readonly<{
-  state: S;
-}> &
-  M;
+  export type StoreWithState<S> = {
+    actions: <A extends Actions<S>>(actions: A) => Output.BasicStore<S, A>;
+  };
+}
 
-const store = <S, M extends Methods<S>>(
-  input: Input<S, M>
-): Store<S, M> => {
-  const subscribers = new Map<number, SubscribeFn>();
-  let i = 0;
+export namespace Output {
+  export type Actions<S, A extends Input.Actions<S>> = {
+    [k in keyof A]: A[k] extends (s: S, ...args: infer Args) => Promise<S>
+      ? (...args: Args) => Promise<void>
+      :
 
-  const broadcast = (method: string) => {
-    for (const callback of subscribers.values()) {
+     A[k] extends (s: S, ...args: infer Args) => any
+      ? (...args: Args) => void
+        : never;
+  };
+
+  export type Thunks<
+    S,
+    A extends Input.Actions<S>,
+    T extends Input.Thunks<S, A>
+  > = {
+    [k in keyof T]: T[k] extends (store: any, ...args: infer A) => infer O
+      ? (...args: A) => O
+      : never;
+  };
+
+  export type BasicStore<S, A extends Input.Actions<S>> = {
+    state: Readonly<S>;
+    subscribe: (f: SubscribeFn) => () => void;
+    actions: Actions<S, A>;
+    thunks: <T extends Input.Thunks<S, A>>(
+      thunks: T
+    ) => StoreWithThunks<S, A, T>;
+  };
+
+  export type StoreWithThunks<
+    S,
+    A extends Input.Actions<S>,
+    T extends Input.Thunks<S, A>
+  > = Omit<BasicStore<S, A>, "thunks"> & {
+    thunks: Thunks<S, A, T>;
+  };
+}
+
+const store = <S>(initialState: S): Input.StoreWithState<S> => ({
+  actions: <A extends Input.Actions<S>>(actions: A) =>
+    createStoreWithActions(initialState, actions),
+});
+
+class Subscribers {
+  private i = 0;
+  private subscribers = new Map<number, SubscribeFn>();
+
+  add = (f: SubscribeFn) => {
+    const index = this.i;
+    this.subscribers.set(index, f);
+    this.i++;
+
+    return () => this.subscribers.delete(index);
+  };
+
+  broadcast = (method: string) => {
+    for (const callback of this.subscribers.values()) {
       callback(method);
     }
   };
+}
 
-  const newStore = {
-    state: input.state,
-    subscribe: (f: SubscribeFn) => {
-      const index = i;
-      subscribers.set(index, f);
-      i++;
+const createStoreWithActions = <S, A extends Input.Actions<S>>(
+  initialState: S,
+  actions: A
+): Output.BasicStore<S, A> => {
+  const subscribers = new Subscribers();
 
-      return () => subscribers.delete(index);
+  const newStore: Output.BasicStore<S, A> = {
+    state: initialState,
+    subscribe: subscribers.add,
+    actions: {} as Output.Actions<S, A>,
+    thunks: <T extends Input.Thunks<S, A>>(thunks: T) => {
+      const storeWithThunks = (newStore as any) as Output.StoreWithThunks<
+        S,
+        A,
+        T
+      >;
+
+      storeWithThunks.thunks = keys(thunks).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: (...args: any[]) => {
+            thunks[key](storeWithThunks as any, ...args);
+            subscribers.broadcast(key);
+          },
+        }),
+        {} as Output.Thunks<S, A, T>
+      );
+
+      return storeWithThunks;
     },
   };
 
-  Object.keys(input).forEach((key) => {
-    if (key === "state") {
-      return;
-    }
-
-    const constructor = (input[key] as Function).constructor.name;
-
-    switch (constructor) {
-      case "Function":
-        // @ts-ignore
-        newStore[key] = (...args: any[]) => {
-          // @ts-ignore
-          newStore.state = input[key](newStore.state, ...args);
-          broadcast(key);
-        };
-        break;
-
-      case "AsyncFunction":
-        // @ts-ignore
-        newStore[key] = async (...args: any[]) => {
-          // @ts-ignore
-          newStore.state = await input[key](newStore.state, ...args);
-          broadcast(key);
-        };
-        break;
+  keys(actions).forEach((key) => {
+    if (actions[key].constructor.name === "Function") {
+      // @ts-ignore
+      newStore.actions[key] = (...args: any[]) => {
+        newStore.state = actions[key](newStore.state, ...args) as S;
+        subscribers.broadcast(key);
+      };
+    } else {
+      // @ts-ignore
+      newStore.actions[key] = async (...args: any[]) => {
+        newStore.state = await actions[key](newStore.state, ...args);
+        subscribers.broadcast(key);
+      };
     }
   });
 
-  return (newStore as any) as Store<S, M>;
+  return newStore;
 };
 
 export default store;
