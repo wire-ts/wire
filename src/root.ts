@@ -1,56 +1,12 @@
 import React from "react";
-import { Immutable, Store, deepCopy, keys } from "./common";
-
-const getStateTree = <T extends Record<string, Store<any>>>(root: T) =>
-  keys(root).reduce(
-    (acc, key) => ({ ...acc, [key]: deepCopy(root[key].state) }),
-    {} as { [k in keyof T]: T[k]["state"] }
-  );
+import { Immutable, keys, Store } from "./common";
+import { enable as enableDevtools } from "./devtools";
 
 const rootStore = <T extends Record<string, Store<any>>>(map: T) => {
   return {
-    enableDebugging: () => {
-      const stateMap = getStateTree(map);
-      let extensionReady = false;
-      let outstandingMsgs: object[] = [];
-
-      const postMessage = (msg: object) => {
-        if (extensionReady) {
-          window.postMessage(msg, "*");
-        } else {
-          outstandingMsgs.push(msg);
-        }
-      };
-
-      postMessage({
-        type: "WIRE_INIT",
-        stateMap,
-      });
-
-      keys(map).map((k) =>
-        map[k].subscribe((method) => {
-          postMessage({
-            type: "WIRE_CHANGE",
-            store: k,
-            method,
-            oldState: deepCopy(stateMap[k]),
-            newState: deepCopy(map[k].state),
-          });
-
-          stateMap[k] = deepCopy(map[k].state);
-        })
-      );
-
-      window.addEventListener("message", (e) => {
-        if (typeof e.data === "object" && e.data.type === "WIRE_EXT_READY") {
-          console.log("READY", outstandingMsgs);
-          extensionReady = true;
-          outstandingMsgs.forEach((m) => postMessage(m));
-          outstandingMsgs = [];
-        }
-      });
-    },
+    enableDebugging: () => enableDevtools(map),
     getState: () => map as Immutable<T>,
+    // connector for hooks
     useStore<MP>(f: (props: T) => MP) {
       const [computed, setComputed] = React.useState<MP>(f(map));
       const updateProps = () => {
@@ -68,6 +24,41 @@ const rootStore = <T extends Record<string, Store<any>>>(map: T) => {
       }, []);
 
       return computed as Immutable<MP>;
+    },
+    // connector for class-based components
+    connect<MP, CP>(
+      getProps: (props: T, in_props: CP) => MP,
+      Component: React.ComponentType<CP & MP>
+    ) {
+      return class extends React.PureComponent<CP> {
+        static displayName = `Wired${Component.name}`;
+        mounted = false;
+        unsubs: Array<() => void> = [];
+
+        rerender = () => {
+          if (this.mounted) {
+            this.forceUpdate();
+          }
+        };
+
+        componentDidMount() {
+          this.mounted = true;
+          this.unsubs = keys(map).map((k) => map[k].subscribe(this.rerender));
+        }
+
+        componentWillUnmount() {
+          this.mounted = false;
+          this.unsubs.forEach((unsub) => unsub());
+          this.unsubs = [];
+        }
+
+        render() {
+          return React.createElement(Component, {
+            ...this.props,
+            ...getProps(map, this.props),
+          });
+        }
+      };
     },
   };
 };
