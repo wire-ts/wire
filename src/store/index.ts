@@ -1,4 +1,4 @@
-import { keys } from "../common";
+import { Immutable } from "../common";
 import { Input, Output } from "./types";
 import Subscribers from "./subscribers";
 
@@ -7,18 +7,13 @@ const createStore = <S>(initialState: S): Input.StoreWithState<S> => ({
     const subscribers = new Subscribers();
 
     const store: Output.BasicStore<S, A> = {
-      state: initialState,
+      state: initialState as Immutable<S>,
       subscribe: subscribers.add,
       actions: {} as Output.Actions<S, A>,
-      thunks: (thunks) =>
-        transformThunks(store, subscribers.broadcast, thunks),
+      thunks: (thunks) => transformThunks(store, subscribers.broadcast, thunks),
     };
 
-    store.actions = transformActions(
-      store,
-      subscribers.broadcast,
-      actions
-    );
+    store.actions = transformActions(store, subscribers.broadcast, actions);
 
     return store;
   },
@@ -29,24 +24,23 @@ const transformActions = <S, A extends Input.Actions<S>>(
   broadcast: (method: string) => void,
   actions: A
 ) => {
-  const newActions = {} as Output.Actions<S, A>;
-  keys(actions).forEach((key) => {
-    if (actions[key].constructor.name === "Function") {
-      // @ts-ignore
-      newActions[key] = (...args: any[]) => {
-        store.state = actions[key](store.state, ...args) as S;
+  const newActions = {} as Record<keyof A, Function>;
+
+  for (const [key, action] of Object.entries(actions)) {
+    if (action.constructor.name === "Function") {
+      newActions[key as keyof A] = (...args: any[]) => {
+        store.state = action(store.state, ...args) as Immutable<S>;
         broadcast(key);
       };
     } else {
-      // @ts-ignore
-      newActions[key] = async (...args: any[]) => {
-        store.state = await actions[key](store.state, ...args);
+      newActions[key as keyof A] = async (...args: any[]) => {
+        store.state = (await action(store.state, ...args)) as Immutable<S>;
         broadcast(key);
       };
     }
-  });
+  }
 
-  return newActions;
+  return newActions as Output.Actions<S, A>;
 };
 
 const transformThunks = <
@@ -57,21 +51,17 @@ const transformThunks = <
   store: Output.BasicStore<S, A>,
   broadcast: (method: string) => void,
   thunks: T
-): Output.StoreWithThunks<S, A, T> => {
-  const storeWithThunks = (store as any) as Output.StoreWithThunks<S, A, T>;
+) => {
+  const storeWithThunks = { ...store, thunks: {} as Record<string, Function> };
 
-  storeWithThunks.thunks = keys(thunks).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: (...args: any[]) => {
-        thunks[key](storeWithThunks as any, ...args);
-        broadcast(key);
-      },
-    }),
-    {} as Output.Thunks<S, A, T>
-  );
+  for (const [key, thunk] of Object.entries(thunks)) {
+    storeWithThunks.thunks[key] = (...args: any[]) => {
+      thunk(storeWithThunks, ...args);
+      broadcast(key);
+    };
+  }
 
-  return storeWithThunks;
+  return storeWithThunks as Output.StoreWithThunks<S, A, T>;
 };
 
 export default createStore;

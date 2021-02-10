@@ -1,15 +1,15 @@
-import { SubscribeFn } from "../common";
+import { SubscribeFn, Immutable } from "../common";
 
 export namespace Input {
   export type Actions<S> = Record<
     string,
-    (state: S, ...args: any[]) => S | Promise<S>
+    (state: Immutable<S>, ...args: any[]) => S | Promise<S>
   >;
 
   export type Thunks<S, A extends Actions<S>> = Record<
     string,
     (
-      store: { state: S; actions: Output.Actions<S, A> },
+      store: { state: Immutable<S>; actions: Output.Actions<S, A> },
       ...args: any[]
     ) => void | Promise<void>
   >;
@@ -21,9 +21,9 @@ export namespace Input {
 
 export namespace Output {
   export type Actions<S, A extends Input.Actions<S>> = {
-    [k in keyof A]: A[k] extends (s: S, ...args: infer Args) => Promise<S>
+    [k in keyof A]: A[k] extends (s: Immutable<S>, ...args: infer Args) => Promise<S>
       ? (...args: Args) => Promise<void>
-      : A[k] extends (s: S, ...args: infer Args) => any
+      : A[k] extends (s: Immutable<S>, ...args: infer Args) => any
       ? (...args: Args) => void
       : never;
   };
@@ -39,7 +39,7 @@ export namespace Output {
   };
 
   export type BasicStore<S, A extends Input.Actions<S>> = {
-    state: Readonly<S>;
+    state: Immutable<S>;
     subscribe: (f: SubscribeFn) => () => void;
     actions: Actions<S, A>;
     thunks: <T extends Input.Thunks<S, A>>(
