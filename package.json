@@ -1,17 +1,32 @@
 {
   "name": "wire",
   "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "Gregory <gregory.mkv@gmail.com>",
   "description": "",
-  "main": "index.js",
+  "keywords": [
+    "react",
+    "state",
+    "store",
+    "redux"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf dist && tsc",
+    "test": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "peerDependencies": {
-    "@types/react": "*",
     "react": "*",
     "typescript": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/react": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wire-ts/wire.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wire-ts/wire/issues"
   }
 }
