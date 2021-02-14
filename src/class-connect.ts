@@ -1,5 +1,5 @@
 import React from "react";
-import { Store, keys } from "common";
+import { Store, keys } from "./common";
 
 export interface ClassConnector<MP> {
   <CP>(Component: React.ComponentType<CP & MP>): React.ComponentType<CP>;

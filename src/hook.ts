@@ -1,4 +1,4 @@
-import { Immutable, Store } from "common";
+import { Immutable, Store } from "./common";
 import React from "react";
 
 const createHook = <T extends Record<string, Store<any>>>(map: T) => <MP>(
