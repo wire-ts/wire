@@ -2,10 +2,7 @@ import { SubscribeFn, Immutable } from "../common";
 
 export namespace Input {
   export type Actions<S> = {
-    [k in string]: (
-      state: Immutable<S>,
-      ...args: any[]
-    ) => S | Promise<S>;
+    [k in string]: (state: Immutable<S>, ...args: any[]) => Immutable<S> | Promise<Immutable<S>>;
   };
 
   export type Thunks = Record<string, (...args: any[]) => void | Promise<void>>;
