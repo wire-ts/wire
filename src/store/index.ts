@@ -10,7 +10,10 @@ const createStore = <S>(initialState: S): Input.StoreWithState<S> => ({
       state: initialState as Immutable<S>,
       subscribe: subscribers.add,
       actions: {} as Output.Actions<S, A>,
-      thunks: (thunks) => transformThunks(store, subscribers.broadcast, thunks),
+      thunks: <T extends Input.Thunks>(thunks: T) => {
+        (store as any).thunks = thunks;
+        return store as any as Output.StoreWithThunks<S, A, T>;
+      }
     };
 
     store.actions = transformActions(store, subscribers.broadcast, actions);
@@ -43,25 +46,25 @@ const transformActions = <S, A extends Input.Actions<S>>(
   return newActions as Output.Actions<S, A>;
 };
 
-const transformThunks = <
-  S,
-  A extends Input.Actions<S>,
-  T extends Input.Thunks<S, A>
->(
-  store: Output.BasicStore<S, A>,
-  broadcast: (method: string) => void,
-  thunks: T
-) => {
-  const storeWithThunks = { ...store, thunks: {} as Record<string, Function> };
-
-  for (const [key, thunk] of Object.entries(thunks)) {
-    storeWithThunks.thunks[key] = (...args: any[]) => {
-      thunk(storeWithThunks, ...args);
-      broadcast(key);
-    };
-  }
-
-  return storeWithThunks as Output.StoreWithThunks<S, A, T>;
-};
-
+// const transformThunks = <
+//   S,
+//   A extends Input.Actions<S>,
+//   T extends Input.Thunks
+// >(
+//   store: Output.BasicStore<S, A>,
+//   broadcast: (method: string) => void,
+//   thunks: T
+// ) => {
+//   const storeWithThunks = { ...store, thunks: {} as Record<string, Function> };
+//
+//   for (const [key, thunk] of Object.entries(thunks)) {
+//     storeWithThunks.thunks[key] = (...args: any[]) => {
+//       thunk(storeWithThunks, ...args);
+//       broadcast(key);
+//     };
+//   }
+//
+//   return storeWithThunks as Output.StoreWithThunks<S, A, T>;
+// };
+//
 export default createStore;

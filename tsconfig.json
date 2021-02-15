@@ -6,8 +6,8 @@
     "module": "commonjs",
     "jsx": "react",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "src",
@@ -16,7 +16,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "outDir": "dist",
-    "keyofStringsOnly":true
+    "outDir": "dist"
   }
 }

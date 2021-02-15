@@ -9,12 +9,14 @@ export const counter = store({ i: 0 })
     }),
   })
   .thunks({
-    async postLogin(store) {
-      await store.actions.load("123");
+    postLogin() {
+      counter.actions.load("123");
+    },
+    test2() {
+      this.postLogin();
     },
   });
 
 export const root = rootStore({
   counter,
 });
-

@@ -21,4 +21,3 @@ class App extends React.Component<InProps & Props<typeof connect>> {
 export const Connected = connect(App);
 
 export const Test = () => <Connected id={1} />;
-

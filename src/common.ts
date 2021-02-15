@@ -5,6 +5,16 @@ export interface Store<S> {
   subscribe: (f: SubscribeFn) => () => void;
 }
 
+export type AllExceptAny =  undefined
+  | null
+  | boolean
+  | string
+  | number
+  | Function
+  | Map<any, any>
+  | Set<any>
+  | object;
+
 type ImmutablePrimitive =
   | undefined
   | null
@@ -44,4 +54,5 @@ export const deepCopy = <T extends Array<any> | object>(object: T): T => {
   return outObject;
 };
 
-export const keys = <T extends object>(object: T) => Object.keys(object) as Array<keyof T>
+export const keys = <T extends object>(object: T) =>
+  Object.keys(object) as Array<keyof T>;
