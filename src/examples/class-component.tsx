@@ -6,9 +6,9 @@ interface InProps {
   id: number;
 }
 
-const connect = root.connect((r) => ({ ...r.counter }));
+const connect = root.connect((r, _: InProps) => ({ ...r.counter }));
 
-class App extends React.Component<InProps & Props<typeof connect>> {
+class App extends React.Component<Props<typeof connect>> {
   render() {
     const {
       state: { i },

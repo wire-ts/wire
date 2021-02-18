@@ -31,12 +31,12 @@ const transformActions = <S, A extends Input.Actions<S>>(
 
   for (const [key, action] of Object.entries(actions)) {
     if (action.constructor.name === "Function") {
-      newActions[key as keyof A] = (...args: any[]) => {
+      newActions[key as keyof A] = (...args: never[]) => {
         store.state = action(store.state, ...args) as Immutable<S>;
         broadcast(key);
       };
     } else {
-      newActions[key as keyof A] = async (...args: any[]) => {
+      newActions[key as keyof A] = async (...args: never[]) => {
         store.state = (await action(store.state, ...args)) as Immutable<S>;
         broadcast(key);
       };
