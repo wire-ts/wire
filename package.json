@@ -4,11 +4,14 @@
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Gregory <gregory.mkv@gmail.com>",
-  "description": "",
+  "homepage":"https://wire-ts.github.io",
+  "description": "A type-safe data store for React",
   "keywords": [
     "react",
     "state",
     "store",
+    "typescript",
+    "connect",
     "redux"
   ],
   "scripts": {
