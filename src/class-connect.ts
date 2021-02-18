@@ -5,7 +5,7 @@ export interface ClassConnector<MP, CP> {
   (Component: React.ComponentType<CP & MP>): React.ComponentType<CP>;
 }
 
-export type Props<T> = T extends ClassConnector<infer P, any> ? P : never;
+export type Props<T> = T extends ClassConnector<infer P, infer O> ? P & O : never;
 
 const makeClassConnector = <T extends Record<string, Store<any>>>(map: T) => <
   MP,
