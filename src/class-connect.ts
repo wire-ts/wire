@@ -1,17 +1,18 @@
 import React from "react";
 import { Store, keys } from "./common";
 
-export interface ClassConnector<MP> {
-  <CP>(Component: React.ComponentType<CP & MP>): React.ComponentType<CP>;
+export interface ClassConnector<MP, CP> {
+  (Component: React.ComponentType<CP & MP>): React.ComponentType<CP>;
 }
 
-export type Props<T> = T extends ClassConnector<infer P> ? P : never;
+export type Props<T> = T extends ClassConnector<infer P, any> ? P : never;
 
 const makeClassConnector = <T extends Record<string, Store<any>>>(map: T) => <
-  MP
+  MP,
+  CP
 >(
-  getProps: (props: T) => MP
-): ClassConnector<MP> => <CP>(Component: React.ComponentType<CP & MP>) =>
+  getProps: (props: T, ownProps: CP) => MP
+): ClassConnector<MP, CP> => (Component: React.ComponentType<CP & MP>) =>
   class extends React.PureComponent<CP> {
     static displayName = `Wired${Component.name}`;
     mounted = false;
@@ -37,7 +38,7 @@ const makeClassConnector = <T extends Record<string, Store<any>>>(map: T) => <
     render() {
       return React.createElement(Component, {
         ...this.props,
-        ...getProps(map),
+        ...getProps(map, this.props),
       });
     }
   };
