@@ -5,8 +5,11 @@ const createHook = <T extends Record<string, Store<any>>>(map: T) => <MP>(
   f: (props: T) => MP
 ) => {
   const [computed, setComputed] = React.useState<MP>(f(map));
+  const [_, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
   const updateProps = () => {
     setComputed(f(map));
+    forceUpdate();
   };
 
   React.useEffect(() => {
