@@ -1,20 +1,22 @@
 import { rootStore, store } from "..";
 
-export const counter = store({ i: 0 })
+interface Todo {
+  id: number;
+  task: string;
+  done: boolean;
+}
+
+const todos = store({ list: [] as Todo[] })
   .actions({
-    incrementBy: (state, x: number) => ({ ...state, i: state.i + x }),
-    load: (state, id: string) => ({
+    add: (state, newItem: Todo) => ({
       ...state,
-      i: 1,
+      list: [...state.list, newItem],
     }),
   })
-  .thunks({
-    postLogin(x) {
-      counter.actions.load("123");
-    },
-    test2() {},
+  .selectors({
+    incomplete: (state) => state.list.filter((t) => !t.done),
   });
 
 export const root = rootStore({
-  counter,
+  todos,
 });
