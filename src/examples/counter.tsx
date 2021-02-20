@@ -3,18 +3,16 @@ import { rootStore, store } from "..";
 export const counter = store({ i: 0 })
   .actions({
     incrementBy: (state, x: number) => ({ ...state, i: state.i + x }),
-    load: async (state, id: string) => ({
+    load: (state, id: string) => ({
       ...state,
-      i: await Promise.resolve(parseFloat(id)),
+      i: 1,
     }),
   })
   .thunks({
-    postLogin() {
+    postLogin(x) {
       counter.actions.load("123");
     },
-    test2() {
-      this.postLogin();
-    },
+    test2() {},
   });
 
 export const root = rootStore({
