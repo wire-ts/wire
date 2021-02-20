@@ -1,6 +1,6 @@
 {
   "name": "@wire-ts/wire",
-  "version": "0.9.6",
+  "version": "0.10.0",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Gregory <gregory.mkv@gmail.com>",
