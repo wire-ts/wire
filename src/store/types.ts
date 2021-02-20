@@ -3,12 +3,13 @@ import { SubscribeFn, Immutable } from "../common";
 export namespace Input {
   export type Actions<S> = Record<
     string,
-      (state: Immutable<S>, ...args: never[]) =>
-        | Immutable<S>
-        | Promise<Immutable<S>>
+    | ((state: Immutable<S>, ...args: never[]) => Immutable<S>)
   >;
 
-  export type Thunks = Record<string, (...args: any[]) => void | Promise<void>>;
+  export type Thunks = Record<
+    string,
+    (...args: never[]) => void | Promise<void>
+  >;
 
   export type StoreWithState<S> = {
     actions: <A extends Actions<S>>(actions: A) => Output.BasicStore<S, A>;
@@ -20,16 +21,12 @@ export namespace Output {
     [k in keyof A]: A[k] extends (
       s: Immutable<S>,
       ...args: infer Args
-    ) => Promise<S>
-      ? (...args: Args) => Promise<void>
-      : A[k] extends (s: Immutable<S>, ...args: infer Args) => any
+    ) => Immutable<S>
       ? (...args: Args) => void
       : never;
   };
 
-  export type Thunks<T extends Input.Thunks> = {
-    [k in keyof T]: T[k];
-  };
+  export type Thunks<T extends Input.Thunks> = T;
 
   export type BasicStore<S, A extends Input.Actions<S>> = {
     state: Immutable<S>;
